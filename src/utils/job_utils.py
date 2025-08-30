@@ -76,7 +76,7 @@ def parse_train_job_params(
         },
         {
             "model_name": dim_reduction_params["model_name"],
-            "task_name": "run",
+            "task_name": "execute",
             "params": {
                 "io_parameters": io_parameters,
                 "model_parameters": {
@@ -138,7 +138,7 @@ def parse_inference_job_params(
         },
         {
             "model_name": dim_reduction_params["model_name"],
-            "task_name": "run",
+            "task_name": "execute",
             "params": {
                 "io_parameters": copy.copy(
                     io_parameters

@@ -8,6 +8,8 @@
         "image_name": "ghcr.io/mlexchange/mlex_pytorch_autoencoders",
         "image_tag": "main",
         "conda_env": "mlex_pytorch_autoencoders",
+        "source": "https://github.com/mlexchange/mlex_pytorch_autoencoders",
+        "is_gpu_enabled": true,
         "application": [
             "data_clinic","latent_space_explorer"
         ],
@@ -374,6 +376,8 @@
         "image_name": "ghcr.io/mlexchange/mlex_dimension_reduction_umap",
         "image_tag": "main",
         "conda_env": "mlex_dimension_reduction_umap",
+        "source": "https://github.com/mlexchange/mlex_dimension_reduction_umap",
+        "is_gpu_enabled": false,
         "application": [
             "data_clinic","latent_space_explorer"
         ],
@@ -506,6 +510,8 @@
         "image_name": "ghcr.io/mlexchange/mlex_dimension_reduction_pca",
         "image_tag": "main",
         "conda_env": "mlex_dimension_reduction_pca",
+        "source": "https://github.com/mlexchange/mlex_dimension_reduction_pca",
+        "is_gpu_enabled": false,
         "application": [
             "latent_space_explorer"
         ],
@@ -540,6 +546,8 @@
         "image_name": "ghcr.io/mlexchange/mlex_clustering",
         "image_tag": "main",
         "conda_env": "mlex_clustering",
+        "source": "https://github.com/mlexchange/mlex_clustering",
+        "is_gpu_enabled": false,
         "application": [
             "latent_space_explorer"
         ],
@@ -564,6 +572,8 @@
         "image_name": "ghcr.io/mlexchange/mlex_clustering",
         "image_tag": "main",
         "conda_env": "mlex_clustering",
+        "source": "https://github.com/mlexchange/mlex_clustering",
+        "is_gpu_enabled": false,
         "application": [
             "latent_space_explorer"
         ],
@@ -595,6 +605,8 @@
         "image_name": "ghcr.io/mlexchange/mlex_clustering",
         "image_tag": "main",
         "conda_env": "mlex_clustering",
+        "source": "https://github.com/mlexchange/mlex_clustering",
+        "is_gpu_enabled": false,
         "application": [
             "latent_space_explorer"
         ],

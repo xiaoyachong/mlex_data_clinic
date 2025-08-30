@@ -129,7 +129,7 @@ class MlflowAlgorithmClient:
 
     def register_algorithm(self, algorithm_config, overwrite=False):
         """
-        Register an algorithm definition in MLflow
+        Register an algorithm definition in MLflow with minimal parameters
 
         Args:
             algorithm_config (dict): Algorithm configuration with GUI parameters
@@ -174,39 +174,19 @@ class MlflowAlgorithmClient:
             logger.warning(f"Error creating experiment: {e}")
             experiment_id = "0"  # Default experiment
 
-        # Load environment variables
-        READ_DIR_MOUNT = os.getenv("READ_DIR", "")
-        CONTAINER_NETWORK = os.getenv("CONTAINER_NETWORK", "")
-        PARTITIONS_CPU = json.loads(os.getenv("PARTITIONS_CPU", "[]"))
-        RESERVATIONS_CPU = json.loads(os.getenv("RESERVATIONS_CPU", "[]"))
-        MAX_TIME_CPU = os.getenv("MAX_TIME_CPU", "1:00:00")
-        SUBMISSION_SSH_KEY = os.getenv("SUBMISSION_SSH_KEY", "")
-        FORWARD_PORTS = json.loads(os.getenv("FORWARD_PORTS", "[]"))
-
         # Start MLflow run to log algorithm definition
         with mlflow.start_run(experiment_id=experiment_id) as run:
-            # Log basic algorithm metadata
+            # Log only the required minimal metadata as tags for searchability
             mlflow.set_tag("algorithm_type", algorithm_type)
             mlflow.set_tag("entity_type", "algorithm_definition")  # Important tag!
             mlflow.set_tag("version", algorithm_config.get("version", "0.0.1"))
             mlflow.set_tag("owner", algorithm_config.get("owner", "mlexchange team"))
 
-            # Log container info
+            # Log only the specified parameters
             mlflow.log_param("image_name", algorithm_config.get("image_name", ""))
             mlflow.log_param("image_tag", algorithm_config.get("image_tag", ""))
-            mlflow.log_param("conda_env", algorithm_config.get("conda_env", ""))
-            mlflow.log_param("network", CONTAINER_NETWORK)
-            mlflow.log_param(
-                "volumes", json.dumps([f"{READ_DIR_MOUNT}:/tiled_storage"])
-            )
-
-            # Log Slurm info
-            mlflow.log_param("num_nodes", 1)
-            mlflow.log_param("partitions", json.dumps(PARTITIONS_CPU))
-            mlflow.log_param("reservations", json.dumps(RESERVATIONS_CPU))
-            mlflow.log_param("max_time", MAX_TIME_CPU)
-            mlflow.log_param("submission_ssh_key", SUBMISSION_SSH_KEY)
-            mlflow.log_param("forward_ports", json.dumps(FORWARD_PORTS))
+            mlflow.log_param("source", algorithm_config.get("source", ""))
+            mlflow.log_param("is_gpu_enabled", algorithm_config.get("is_gpu_enabled", False))
 
             # Log file paths
             python_files = algorithm_config.get("python_file_name", {})
@@ -223,7 +203,7 @@ class MlflowAlgorithmClient:
             # Log description
             mlflow.log_param("description", algorithm_config.get("description", ""))
 
-            # Save complete algorithm config
+            # Save complete algorithm config for reference
             temp_dir = os.path.join(self.cache_dir, "artifacts")
             os.makedirs(temp_dir, exist_ok=True)
             temp_file = os.path.join(temp_dir, "algorithm_config.json")
