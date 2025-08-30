@@ -186,7 +186,9 @@ class MlflowAlgorithmClient:
             mlflow.log_param("image_name", algorithm_config.get("image_name", ""))
             mlflow.log_param("image_tag", algorithm_config.get("image_tag", ""))
             mlflow.log_param("source", algorithm_config.get("source", ""))
-            mlflow.log_param("is_gpu_enabled", algorithm_config.get("is_gpu_enabled", False))
+            mlflow.log_param(
+                "is_gpu_enabled", algorithm_config.get("is_gpu_enabled", False)
+            )
 
             # Log file paths
             python_files = algorithm_config.get("python_file_name", {})
