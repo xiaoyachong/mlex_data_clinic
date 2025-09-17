@@ -18,6 +18,7 @@ from src.utils.plot_utils import (
 
 logger = logging.getLogger("dataclinic.display")
 
+
 @callback(
     Output("current-target-size", "data"),
     Output("ls-graph", "src"),

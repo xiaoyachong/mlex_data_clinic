@@ -7,8 +7,8 @@ from uuid import uuid4
 # Set up basic configuration
 logging.basicConfig(
     level=logging.INFO,  # Use DEBUG to see all logs
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[logging.StreamHandler(sys.stdout)]
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)],
 )
 
 # Create logger for this module
@@ -20,7 +20,7 @@ logging.getLogger("dataclinic").setLevel(logging.INFO)
 
 # Force propagation for all existing lse loggers
 for name in logging.root.manager.loggerDict:
-    if name.startswith('dataclinic.'):
+    if name.startswith("dataclinic."):
         logging.getLogger(name).propagate = True
 
 
