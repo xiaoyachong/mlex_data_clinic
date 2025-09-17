@@ -1,3 +1,4 @@
+import logging
 import numpy as np
 from dash import ALL, Input, Output, State, callback
 from dash.exceptions import PreventUpdate
@@ -14,6 +15,7 @@ from src.utils.plot_utils import (
     plot_figure,
 )
 
+logger = logging.getLogger("dataclinic.display")
 
 @callback(
     Output("current-target-size", "data"),

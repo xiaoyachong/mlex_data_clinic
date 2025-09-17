@@ -33,8 +33,7 @@ MODE = os.getenv("MODE", "dev")
 PREFECT_TAGS = json.loads(os.getenv("PREFECT_TAGS", '["data-clinic"]'))
 
 # Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("dataclinic.app_layout")
 
 # SETUP DASH APP
 cache = diskcache.Cache("./cache")
