@@ -1,4 +1,5 @@
 import logging
+
 import numpy as np
 from dash import ALL, Input, Output, State, callback
 from dash.exceptions import PreventUpdate
