@@ -1,9 +1,8 @@
-import os
-from uuid import uuid4
-
 # Configure logging at the earliest possible point
 import logging
+import os
 import sys
+from uuid import uuid4
 
 # Set up basic configuration
 logging.basicConfig(
