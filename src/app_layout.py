@@ -16,7 +16,7 @@ from src.components.infrastructure import create_infra_state_affix
 from src.components.main_display import main_display
 from src.components.sidebar import sidebar
 from src.components.training_stats import training_stats_plot
-from src.utils.mlflow_utils import MlflowAlgorithmClient
+from mlex_utils.mlflow_utils.mlflow_algorithm_client import MlflowAlgorithmClient
 
 load_dotenv(".env")
 
