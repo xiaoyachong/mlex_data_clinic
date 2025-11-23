@@ -4,14 +4,9 @@ import os
 from urllib.parse import urljoin
 
 # I/O parameters for job execution
-READ_DIR_MOUNT = os.getenv("READ_DIR_MOUNT", None)
-WRITE_DIR_MOUNT = os.getenv("WRITE_DIR_MOUNT", None)
 WRITE_DIR = os.getenv("WRITE_DIR", "")
 RESULTS_TILED_URI = os.getenv("RESULTS_TILED_URI", "")
-RESULTS_TILED_API_KEY = os.getenv("RESULTS_TILED_API_KEY", "")
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "")
-MLFLOW_TRACKING_USERNAME = os.getenv("MLFLOW_TRACKING_USERNAME", "")
-MLFLOW_TRACKING_PASSWORD = os.getenv("MLFLOW_TRACKING_PASSWORD", "")
 
 
 def parse_tiled_url(url, user, project_name, tiled_base_path="/api/v1/metadata"):
@@ -44,16 +39,12 @@ def parse_train_job_params(
     io_parameters = {
         "uid_retrieve": "",
         "data_uris": data_uris,
-        "data_tiled_api_key": data_project.api_key,
         "data_type": data_project.data_type,
         "root_uri": data_project.root_uri,
         "models_dir": f"{results_dir}/models",
         "results_tiled_uri": parse_tiled_url(RESULTS_TILED_URI, user, project_name),
-        "results_tiled_api_key": RESULTS_TILED_API_KEY,
         "results_dir": f"{results_dir}",
         "mlflow_uri": MLFLOW_TRACKING_URI,
-        "mlflow_tracking_username": MLFLOW_TRACKING_USERNAME,
-        "mlflow_tracking_password": MLFLOW_TRACKING_PASSWORD,
     }
 
     # Create a simpler params_list structure with model_name and task_name
@@ -114,16 +105,12 @@ def parse_inference_job_params(
     io_parameters = {
         "uid_retrieve": "",
         "data_uris": data_uris,
-        "data_tiled_api_key": data_project.api_key,
         "data_type": data_project.data_type,
         "root_uri": data_project.root_uri,
         "models_dir": f"{results_dir}/models",
         "results_tiled_uri": parse_tiled_url(RESULTS_TILED_URI, user, project_name),
-        "results_tiled_api_key": RESULTS_TILED_API_KEY,
         "results_dir": f"{results_dir}",
         "mlflow_uri": MLFLOW_TRACKING_URI,
-        "mlflow_tracking_username": MLFLOW_TRACKING_USERNAME,
-        "mlflow_tracking_password": MLFLOW_TRACKING_PASSWORD,
     }
 
     # Create a simpler params_list structure with model_name and task_name
