@@ -5,6 +5,7 @@ import traceback
 import uuid
 from datetime import datetime
 
+import mlflow
 import pytz
 from dash import MATCH, Input, Output, State, callback, html, no_update
 from dash.exceptions import PreventUpdate
@@ -36,6 +37,7 @@ TIMEZONE = os.getenv("TIMEZONE", "US/Pacific")
 FLOW_NAME = os.getenv("FLOW_NAME", "")
 PREFECT_TAGS = json.loads(os.getenv("PREFECT_TAGS", '["data-clinic"]'))
 WRITE_DIR = os.getenv("WRITE_DIR", "")
+MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow:5000")
 
 logger = logging.getLogger(__name__)
 
@@ -328,12 +330,28 @@ def allow_show_stats(job_id, check_job_n_intervals):
         ) not in ["COMPLETED", "RUNNING"]:
             return True
 
-        child_job_id = children_job_ids[0]  # training job
+        child_job_id = children_job_ids[0]  # training job (Prefect flow run ID)
 
-        # Check if the report file exists
-        expected_report_path = f"{WRITE_DIR}/{USER}/models/{child_job_id}/report.html"
-        if os.path.exists(expected_report_path):
-            return False
+        # Check if the report file exists in MLflow
+        try:
+            mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+            client = mlflow.tracking.MlflowClient()
+            
+            # Search for model by Prefect job ID
+            model_versions = client.search_model_versions(
+                filter_string=f"name='{child_job_id}'"
+            )
+            if not model_versions or len(model_versions) == 0:
+                return True
+            
+            # Get the run_id from the model version
+            mlflow_run_id = model_versions[0].run_id
+            artifacts = client.list_artifacts(mlflow_run_id, "dvc_metrics")
+            if any(artifact.path == "dvc_metrics/report.html" for artifact in artifacts):
+                return False
+        except Exception as e:
+            logger.error(f"Error checking MLflow artifacts: {e}")
+            return True
 
     return True
 
@@ -363,16 +381,37 @@ def show_training_stats(show_stats_n_clicks, job_id):
     if show_stats_n_clicks > 0:
 
         children_job_ids = get_children_flow_run_ids(job_id)
-        child_job_id = children_job_ids[0]
-        expected_report_path = f"{WRITE_DIR}/{USER}/models/{child_job_id}/report.html"
+        child_job_id = children_job_ids[0]  # Prefect flow run ID
+        
+        # Download report from MLflow
+        try:
+            mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+            client = mlflow.tracking.MlflowClient()
+            
+            # Search for model by Prefect job ID
+            model_versions = client.search_model_versions(
+                filter_string=f"name='{child_job_id}'"
+            )
+            if not model_versions or len(model_versions) == 0:
+                logger.error(f"No model found for Prefect flow: {child_job_id}")
+                return [], False
+            
+            # Get the run_id from the model version
+            mlflow_run_id = model_versions[0].run_id
+            logger.info(f"Found MLflow run ID: {mlflow_run_id} for Prefect flow: {child_job_id}")
+            
+            report_path = client.download_artifacts(mlflow_run_id, "dvc_metrics/report.html")
+            
+            with open(report_path, "r") as f:
+                report_html = f.read()
 
-        with open(expected_report_path, "r") as f:
-            report_html = f.read()
-
-        return (
-            html.Iframe(srcDoc=report_html, style={"width": "100%", "height": "600px"}),
-            True,
-        )
+            return (
+                html.Iframe(srcDoc=report_html, style={"width": "100%", "height": "600px"}),
+                True,
+            )
+        except Exception as e:
+            logger.error(f"Error loading report from MLflow: {e}")
+            return [], False
     else:
         return [], False
 
